@@ -171,7 +171,7 @@ div{
 
         function addToCart(item, quantity) {
             quantity = parseFloat(quantity);
-            if (!quantity || quantity <= 0) {
+            if (!quantity || quantity < 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid quantity',
