@@ -1,87 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><title>Little Dairy Chef</title>
+    <meta charset="UTF-8">
+    <title>Little Dairy Chef</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link id='favicon' rel="shortcut icon" href="./logo.png" type="image/x-png">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 
-body {
-    font-family: 'Fredoka One', sans-serif;
-    overflow-x: hidden;
-}
+        body {
+            font-family: 'Fredoka One', sans-serif;
+            overflow-x: hidden;
+        }
 
-/* Add styles for the logo */
-header {
-    background-color: #4eb4ed;
-    padding: 1rem;
-    display: flex; /* Enable flexbox layout */
-    justify-content: space-between;
-}
+        header {
+            background-color: #009af0;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-header img {
-    width: 150px; /* Adjust the width as needed */
-    height: auto; /* Maintain aspect ratio */
-    margin-right: 1rem; /* Add some spacing between the logo and the title */
-}
+        header img {
+            width: 150px;
+            height: auto;
+            margin-right: 1rem;
+        }
 
-header h1 {
-    color: #c7d7e1;
-    margin: 0; /* Remove default margin */
-    font-size: 2em
-}
-form{
-    max-width: 900px;
-    display: flex;
-}
+        header h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 2em;
+        }
 
-/* Rest of your CSS remains unchanged */
+        nav ul {
+            display: inline;
+            list-style-type: none;
+            padding: 0;
+        }
 
-header {
-    background-color: #009af0;
-    padding: 1rem;
-    display: flex;
-    align-items: center; /* Center items vertically */
-    justify-content: space-around; /* Center items horizontally */
-}
+        nav li {
+            display: inline;
+            margin-left: 1rem;
+        }
 
-header h1 {
-    color: #fff;
-    display: inline;
-}
+        nav a {
+            color: #fff;
+            text-decoration: none;
+        }
 
-nav ul {
-    display: inline;
-    list-style-type: none;
-    padding: 0;
-}
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-nav li {
-    display: inline;
-    margin-left: 1rem;
-}
+        @media (max-width: 600px) {
+            .a {
+                display: none;
+            }
+            header h1 {
+                font-size: x-large;
+            }
+        }
 
-nav a {
-    color: #fff;
-    text-decoration: none;
-}
-div{
-    margin: 1%;
-}
-@media (max-width:600px) {
-    .a{
-        display: none;
-    }
-    header h1 {
-        display: flex !important;
-        align-items: start;
-        font-size: x-larger;
-    }
-}
-</style>
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            color: #fff;
+        }
+    </style>
 </head>
 <body class="bg-green-100">
     <header>
@@ -94,23 +89,28 @@ div{
     </div>
     <center>
         <form id="order-form" class="flex flex-col gap-4 p-4">
-            <input type="text" id="name" placeholder="Your Name" class="p-2 border rounded">
-            <input type="text" id="Number" placeholder="Phone Number" class="p-2 border rounded">
-            <input type="text" id="Additional_text" placeholder="Additional Message" class="p-2 border rounded">
-            <label id="Total" class="text-lg font-bold"></label>
+            <input type="text" id="name" placeholder="Your Name" class="p-2 border rounded" aria-label="Your Name">
+            <input type="text" id="Number" placeholder="Phone Number" class="p-2 border rounded" aria-label="Phone Number">
+            <input type="text" id="Additional_text" placeholder="Additional Message" class="p-2 border rounded" aria-label="Additional Message">
+            <label id="Total" class="text-lg font-bold">Total: 0</label>
         </form>
     </center>
     <div id="cart-summary" class="p-4"></div>
+    <br><hr>
+    <div id="loading" class="loading">Processing...</div>
+    <div class="bg-blue-400" style=" z-index: 9999;bottom: 0px;position: fixed;text-align: center;left: 0;width: 100%">
+        <center><span style="color:#fdf4ea;">© Ali Cheikh 2024. all rights reserved</span></center>
+    </div>
 
     <script>
         const items = [
-            { name: "1L yoghurt", type: "piece", price: 4300, image: "./Pics/1L-yoghurt.jpg" },
-            { name: "1.5L yoghurt", type: "piece", price: 6200, image: "./Pics/1.5L-yoghurt.jpg" },
-            { name: "0.25L yoghurt", type: "piece", price: 1500, image: "./Pics/0.25L-yoghurt.jpg" },
-            { name: "0.5L yoghurt", type: "piece", price: 2600, image: "./Pics/0.5L-yoghurt.jpg" },
-            { name: "Mozzarella", type: "kg", price: 1500, image: "./Pics/mozzarella.jpg" },
-            { name: "Gouda", type: "kg", price: 1500, image: "./Pics/gouda.jpg" },
-        ];
+                { name: "1L yoghurt", type: "piece", price: 4300, image: "./Pics/1L-yoghurt.jpg" },
+                { name: "1.5L yoghurt", type: "piece", price: 6200, image: "./Pics/1.5L-yoghurt.jpg" },
+                { name: "0.25L yoghurt", type: "piece", price: 1500, image: "./Pics/0.25L-yoghurt.jpg" },
+                { name: "0.5L yoghurt", type: "piece", price: 2600, image: "./Pics/0.5L-yoghurt.jpg" },
+                { name: "Mozzarella", type: "kg", price: 1500, image: "./Pics/mozzarella.jpg" },
+                { name: "Gouda", type: "kg", price: 1500, image: "./Pics/gouda.jpg" },
+            ];
         let cart = [];
 
         const webhookURL = "https://discord.com/api/webhooks/1267214910593564714/sDfcOLK6H1woD93dmsKCiFiOQkBmqR4zjpPy1rKAtDOhXyRNO7v82U-7zkFj4q5mFnyj";
@@ -170,7 +170,7 @@ div{
 
         function addToCart(item, quantity) {
             quantity = parseFloat(quantity);
-            if (!quantity || quantity < 0) {
+            if (!quantity || quantity <= 0) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Invalid quantity',
@@ -238,7 +238,7 @@ div{
             const checkoutButton = document.createElement("button");
             checkoutButton.className = "bg-green-500 text-white px-4 py-2 rounded mt-4";
             checkoutButton.textContent = "Checkout";
-            checkoutButton.addEventListener("click", () =>  order());
+            checkoutButton.addEventListener("click", () => order());
 
             cartSummaryContainer.appendChild(checkoutButton);
         }
@@ -272,7 +272,7 @@ div{
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    content: "New Order",
+                    content: "@here New Order",
                     embeds: [
                         {
                             title: "Order Details",
