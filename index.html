@@ -97,7 +97,6 @@ div{
             <input type="text" id="name" placeholder="Your Name" class="p-2 border rounded">
             <input type="text" id="Number" placeholder="Phone Number" class="p-2 border rounded">
             <input type="text" id="Additional_text" placeholder="Additional Message" class="p-2 border rounded">
-            <button type="button" onclick="order()" class="bg-blue-500 text-white p-2 rounded">Order</button>
             <label id="Total" class="text-lg font-bold"></label>
         </form>
     </center>
@@ -239,7 +238,7 @@ div{
             const checkoutButton = document.createElement("button");
             checkoutButton.className = "bg-green-500 text-white px-4 py-2 rounded mt-4";
             checkoutButton.textContent = "Checkout";
-            checkoutButton.addEventListener("click", () => checkout());
+            checkoutButton.addEventListener("click", () =>  order());
 
             cartSummaryContainer.appendChild(checkoutButton);
         }
