@@ -112,12 +112,12 @@ div{
             { name: "Mozzarella", type: "kg", price: 1500, image: "./Pics/mozzarella.jpg" },
             { name: "Gouda", type: "kg", price: 1500, image: "./Pics/gouda.jpg" },
         ];
-
         let cart = [];
 
         const webhookURL = "https://discord.com/api/webhooks/1267214910593564714/sDfcOLK6H1woD93dmsKCiFiOQkBmqR4zjpPy1rKAtDOhXyRNO7v82U-7zkFj4q5mFnyj";
 
         const TotalPriceLabel = document.getElementById("Total");
+        const loadingIndicator = document.getElementById("loading");
 
         function createItemCards() {
             const itemCardsContainer = document.getElementById("item-cards");
@@ -198,7 +198,7 @@ div{
         function updateTotalPrice() {
             let totalPrice = 0;
             cart.forEach(item => {
-                totalPrice += item.type === "kg" ? (item.price * item.quantity) : (item.price * item.quantity);
+                totalPrice += item.price * item.quantity;
             });
             const formattedTotalPrice = Number(totalPrice).toLocaleString();
             TotalPriceLabel.textContent = "Total: " + formattedTotalPrice;
@@ -235,91 +235,88 @@ div{
                 itemDiv.appendChild(removeButton);
                 cartSummaryContainer.appendChild(itemDiv);
             });
+
+            const checkoutButton = document.createElement("button");
+            checkoutButton.className = "bg-green-500 text-white px-4 py-2 rounded mt-4";
+            checkoutButton.textContent = "Checkout";
+            checkoutButton.addEventListener("click", () => checkout());
+
+            cartSummaryContainer.appendChild(checkoutButton);
+        }
+
+        function validateOrderForm() {
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("Number").value.trim();
+            const additionalText = document.getElementById("Additional_text").value.trim();
+
+            if (!name || !phone) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Form Validation',
+                    text: 'Please fill out all required fields.',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                });
+                return false;
+            }
+            return true;
         }
 
         function order() {
-            const name = document.getElementById("name").value;
-            const Phone_Number = document.getElementById("Number").value;
-            const Additional_text = document.getElementById("Additional_text").value;
+            if (!validateOrderForm()) return;
 
-            if (!cart.length) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Cart is empty',
-                    text: 'Please add items to your cart before placing an order.',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                });
-                return;
-            }
-            if (!name) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid name',
-                    text: 'Please enter your name.',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                });
-                return;
-            }
-            if (!Phone_Number) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Phone Number',
-                    text: 'Please enter your phone number.',
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                });
-                return;
-            }
-
-            const order = {
-                name,
-                items: cart,
-                Phone_Number,
-                Additional_text,
-            };
-
-            sendOrderToDiscord(order);
-            document.getElementById("order-form").reset();
-            cart = [];
-            TotalPriceLabel.textContent = "Total: 0";
-            createCartSummary();
-            Swal.fire({
-                icon: 'success',
-                title: 'Order Placed!',
-                text: 'Your order has been successfully placed.',
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-            });
-        }
-
-        function sendOrderToDiscord(order) {
-            const { name, items, Phone_Number, Additional_text } = order;
-            const itemsDetails = items.map(item => `**Item:** ${item.name}, **Quantity:** ${item.quantity}, **Total Price:** ${item.price * item.quantity}`).join('\n');
-            const payload = {
-                content: `@everyone New order received:\nName: **${name}**\nPhone Number: **${Phone_Number}**\nMessage: **${Additional_text}**\n\nOrder Details:\n${itemsDetails}`,
-            };
+            loadingIndicator.style.display = "block";
 
             fetch(webhookURL, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/json"
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify({
+                    content: "New Order",
+                    embeds: [
+                        {
+                            title: "Order Details",
+                            fields: [
+                                { name: "Name", value: document.getElementById("name").value, inline: true },
+                                { name: "Phone", value: document.getElementById("Number").value, inline: true },
+                                { name: "Additional Message", value: document.getElementById("Additional_text").value || "None", inline: false },
+                                { name: "Total", value: TotalPriceLabel.textContent, inline: false },
+                                { name: "Cart Items", value: cart.map(item => `${item.name} (x${item.quantity}) - ${item.price.toLocaleString()}`).join("\n"), inline: false }
+                            ],
+                            color: 0x00ff00 // Green
+                        }
+                    ]
+                })
             })
-            .then((response) => {
+            .then(response => {
                 if (!response.ok) {
-                    throw new Error("Failed to send order to Discord");
+                    throw new Error('Network response was not ok');
                 }
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Order Placed',
+                    text: 'Your order has been successfully placed!',
+                    confirmButtonColor: '#3085d6',
+                });
+                cart = [];
+                updateTotalPrice();
+                createCartSummary();
             })
-            .catch((error) => {
-                console.error("Error:", error);
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Order Failed',
+                    text: `An error occurred: ${error.message}`,
+                    confirmButtonColor: '#3085d6',
+                });
+            })
+            .finally(() => {
+                loadingIndicator.style.display = "none";
             });
         }
 
-        // Initial call to create item cards
-        createItemCards();
+        document.addEventListener("DOMContentLoaded", createItemCards);
     </script>
 </body>
 </html>
