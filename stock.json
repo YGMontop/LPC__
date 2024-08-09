@@ -1,0 +1,44 @@
+[
+    {
+        "name": "1L yoghurt",
+        "type": "piece",
+        "price": 4300,
+        "image": "./Pics/1L-yoghurt.jpg",
+        "stock": 20
+    },
+    {
+        "name": "1.5L yoghurt",
+        "type": "piece",
+        "price": 6200,
+        "image": "./Pics/1.5L-yoghurt.jpg",
+        "stock": 15
+    },
+    {
+        "name": "0.25L yoghurt",
+        "type": "piece",
+        "price": 1500,
+        "image": "./Pics/0.25L-yoghurt.jpg",
+        "stock": 30
+    },
+    {
+        "name": "0.5L yoghurt",
+        "type": "piece",
+        "price": 2600,
+        "image": "./Pics/0.5L-yoghurt.jpg",
+        "stock": 25
+    },
+    {
+        "name": "Mozzarella",
+        "type": "kg",
+        "price": 1500,
+        "image": "./Pics/mozzarella.jpg",
+        "stock": 50
+    },
+    {
+        "name": "Gouda",
+        "type": "kg",
+        "price": 1500,
+        "image": "./Pics/gouda.jpg",
+        "stock": 40
+    }
+]
